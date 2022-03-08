@@ -1,0 +1,24 @@
+{
+  "files.trimTrailingWhitespace": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "[yaml]": {
+    "editor.tabSize": 2
+  },
+  "[html]": {
+    "editor.tabSize": 2
+  },
+  "[java]": {
+    "editor.tabSize": 4
+  },
+  "[xml]": {
+    "editor.tabSize": 4
+  },
+}

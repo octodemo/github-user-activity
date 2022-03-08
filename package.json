@@ -1,0 +1,36 @@
+{
+  "name": "github-user-activity",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "pre-build-exe": "npm run build && npx @vercel/ncc@0.33.3 build lib/executable.js -o runtime",
+    "build-exe-linux-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t linux-x64-14.15.3 -o github-user-commit-activity-linux-x64",
+    "build-exe-mac-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t mac-x64-14.15.3 -o github-user-commit-activity-mac-x64",
+    "build-exe-windows": "npm run pre-build-exe && nexe -i runtime/index.js -t windows-x64-14.15.3 -o github-user-commit-activity"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/octodemo/github-user-activity.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/octodemo/github-user-activity/issues"
+  },
+  "homepage": "https://github.com/octodemo/github-user-activity#readme",
+  "dependencies": {
+    "@octokit/rest": "^18.12.0",
+    "commander": "^9.0.0",
+    "dotenv": "^16.0.0",
+    "json2csv": "^5.0.7"
+  },
+  "devDependencies": {
+    "@octokit/types": "^6.34.0",
+    "@types/node": "^12.19.15",
+    "nexe": "^4.0.0-beta.19",
+    "ts-node": "10.4.0",
+    "typescript": "^4.4.4"
+  }
+}
