@@ -18,13 +18,17 @@ This will make the specified user and organization admin on ALL the organization
 
 ## Configuration
 
-To configure this application you will need to create a `.env` file with the GitHub base URL for the APIs and a Personal Access Token, this will be loaded from the current working directory when running the application;
+To configure this application you can create a `.env` file with the GitHub base URL for the APIs and a Personal Access Token, this will be loaded from the current working directory when running the application;
 
 ```
-# Using a GHES instance (if not specified will default to https://api.github.com)
 GITHUB_ENTERPRISE_SERVER_URL=https://<GitHub Enterprise Server>/api/v3
 GITHUB_ACCESS_TOKEN=ghp_xxx
 ```
+
+Alternatively you can just specify these values as environment variables under the expected names;
+
+* `GITHUB_ENTERPRISE_SERVER_URL`: e.g. https://<GitHub Enterprise Server>/api/v3
+* `GITHUB_ACCESS_TOKEN`: e.g. `ghp_xxx`
 
 
 ## Running the application
@@ -39,3 +43,6 @@ With a populated `.env` file (see [above](#configuration) for details), you can 
 * `-u` `--user`: to provide the user handle that you want to generate the report for
 * `-f` `--from`: An optional from date to filter results since a specific time in the form `YYYY-MM-DDTHH:mm:SS`, you can just specify the `YYYY-MM-DD` as a short hand.
 * `-v` `--verbsoe`: To show verbose logging information
+
+
+Once the application completes it will generate a CSV file for the commits (taking into account the from time if specified) and print the path to the file.

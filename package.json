@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "test": "npm run build && node lib/executable.js --user peter-murray",
     "pre-build-exe": "npm run build && npx @vercel/ncc@0.33.3 build lib/executable.js -o runtime",
     "build-exe-linux-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t linux-x64-14.15.3 -o github-user-commit-activity-linux-x64",
     "build-exe-mac-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t mac-x64-14.15.3 -o github-user-commit-activity-mac-x64",
-    "build-exe-windows": "npm run pre-build-exe && nexe -i runtime/index.js -t windows-x64-14.15.3 -o github-user-commit-activity"
+    "build-exe-windows-x64": "npm run pre-build-exe && nexe -i runtime/index.js -t windows-x64-14.15.3 -o github-user-commit-activity"
   },
   "repository": {
     "type": "git",

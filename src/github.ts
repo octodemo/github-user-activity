@@ -1,4 +1,6 @@
 import { Octokit } from '@octokit/rest';
+import { RequestHeaders, RequestParameters } from '@octokit/types';
+
 import * as config from './config';
 
 export class GitHubClient {
@@ -11,27 +13,27 @@ export class GitHubClient {
     });
   }
 
-
   async getUserContributions(username: string): Promise<UserRepositoryContribution[]> {
     const results: UserQueryResult = await this.octokit.graphql({
       query: USER_QUERY,
       username: username
     });
 
-
-    //TODO need to deal with pagination here
-    const contributions: UserRepositoryContribution[] = [];
-    if (results) {
-      const user = results.user.login;
-      if (results.user.repositoriesContributedTo) {
-        results.user.repositoriesContributedTo.nodes.forEach((contributionRepo: UserQueryRepositoryContribution) => {
-          contributions.push(new UserRepositoryContribution(user, contributionRepo));
-        })
-      }
+    function extractContribution(data: UserQueryResult): UserQueryRepositoryContribution[] {
+      return data.user.repositoriesContributedTo.nodes;
     }
-    return contributions;
-  }
 
+    const data: UserQueryRepositoryContribution[] = await this.getPaginatedQuery<UserQueryResult, UserQueryRepositoryContribution>(
+      USER_QUERY,
+      { username: username },
+      'user.repositoriesContributedTo.pageInfo',
+      extractContribution
+    );
+
+    return data.map(val => {
+      return new UserRepositoryContribution(username, val);
+    });
+  }
 
   async getUserRepositoryContributions(contribution: UserRepositoryContribution, from?: string): Promise<UserCommitActivity[]> {
     const params = {
@@ -62,6 +64,65 @@ export class GitHubClient {
         return results;
       });
   }
+
+  async getPaginatedQuery<T, Y>(
+    query: string,
+    parameters: Object,
+    pageInfoPath: string,
+    extractResultsFn: (val: T) => Y[],
+    headers?): Promise<Y[]> {
+
+    const octokit = this.octokit
+      , results: Y[] = []
+      , queryParameters = Object.assign({ cursor: null }, parameters)
+      ;
+
+    let hasNextPage = false;
+    do {
+      const graphqlParameters = buildGraphQLParameters(query, parameters, headers)
+        , queryResult = await octokit.graphql(graphqlParameters)
+        ;
+
+      // @ts-ignore
+      const extracted: Y = extractResultsFn(queryResult);
+      // @ts-ignore
+      results.push(...extracted);
+
+      const pageInfo = getObject(queryResult, ...pageInfoPath.split('.'));
+      hasNextPage = pageInfo ? pageInfo.hasNextPage : false;
+      if (hasNextPage) {
+        queryParameters.cursor = pageInfo.endCursor;
+      }
+    } while (hasNextPage);
+
+    return results;
+  }
+}
+
+function buildGraphQLParameters(query: string, parameters?: Object, headers?: RequestHeaders): RequestParameters {
+  const result: RequestParameters = {
+    ...(parameters || {}),
+    query: query,
+  };
+
+  if (headers) {
+    result.headers = headers;
+  }
+
+  return result;
+}
+
+function getObject(target, ...path) {
+  if (target !== null && target !== undefined) {
+    const value = target[path[0]];
+
+    if (path.length > 1) {
+      return getObject(value, ...path.slice(1));
+    } else {
+      return value;
+    }
+  }
+  return null;
 }
 
 export class UserCommitActivity {
