@@ -27,7 +27,7 @@ GITHUB_ACCESS_TOKEN=ghp_xxx
 
 Alternatively you can just specify these values as environment variables under the expected names;
 
-* `GITHUB_ENTERPRISE_SERVER_URL`: e.g. https://<GitHub Enterprise Server>/api/v3
+* `GITHUB_ENTERPRISE_SERVER_URL`: e.g. https://\<GitHub Enterprise Server\>/api/v3
 * `GITHUB_ACCESS_TOKEN`: e.g. `ghp_xxx`
 
 
